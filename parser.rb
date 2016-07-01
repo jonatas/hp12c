@@ -4,14 +4,20 @@ class HP12C
   end
   def eval string
     string.lines.each do |line|
-      puts "before: #{line}: #{inspect}" if $debug
+      print "\nbefore: #{line.inspect}: #{xyz.inspect}\n" if $debug
       compute(line.chomp)
-      puts "after: #{line}: #{inspect}" if $debug
+      puts " after:  #{" " * line.inspect.size} #{xyz.inspect}" if $debug
     end
   end
 
   def compute input
-    @x,@y,@z = input.to_f,@x,@y
+    case input
+    when /^([\+\-\/\*])/ then
+      @y, @z = @x, @y
+      @x = @y.send($1.to_sym,@z)
+    else
+      @x,@y,@z = input.to_f,@x,@y
+    end
   end
 
   def xyz
@@ -70,6 +76,7 @@ end
 
 |.ok_if -> { $x == 0 && $y == 0 &&  $z == 1 }
 
+# curious? use $debug = true
 %|
 1
 2
