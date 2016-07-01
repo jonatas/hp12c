@@ -14,7 +14,8 @@ class HP12C
     case input
     when /^([\+\-\/\*])/ then
       @y, @z = @x, @y
-      @x = @z.send($1.to_sym,@y)
+      operator = $1.to_sym
+      @x = [@z,@y].inject operator
     else
       @x,@y,@z = input.to_f,@x,@y
     end
