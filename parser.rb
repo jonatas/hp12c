@@ -14,7 +14,7 @@ class HP12C
     case input
     when /^([\+\-\/\*])/ then
       @y, @z = @x, @y
-      @x = @y.send($1.to_sym,@z)
+      @x = @z.send($1.to_sym,@y)
     else
       @x,@y,@z = input.to_f,@x,@y
     end
@@ -97,4 +97,11 @@ end
 5
 +
 |.ok_if -> { $x == 8 }
+
+%|
+10
+2
+/
+|.ok_if -> { $x == 5 }
+
 
