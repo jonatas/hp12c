@@ -1,12 +1,14 @@
 class HP12C
   def initialize
     @x, @y, @z = 0.0,0.0,0.0
+    @storage = {}
   end
   def eval string
     string.lines.each do |line|
-      print "\nbefore: #{line.inspect}: #{xyz.inspect}\n" if $debug
+      #print "\nbefore: #{line.inspect}: #{xyz.inspect}\n" if $debug
       compute(line.chomp)
-      puts " after:  #{" " * line.inspect.size} #{xyz.inspect}" if $debug
+      #puts " after:  #{" " * line.inspect.size} #{xyz.inspect}" if $debug
+      print "\n: #{line.inspect}: #{xyz.inspect}       #{@storage.inspect}\n" if $debug
     end
   end
 
@@ -15,7 +17,11 @@ class HP12C
     when /^([\+\-\/\*])/ then
       @y, @z = @x, @y
       operator = $1.to_sym
-      @x = [@z,@y].inject operator
+      @x = [@z, @y].inject operator
+    when /^sto (.*)/ then
+      @storage[$1] = @x
+    when /^rcl (.*)/ then
+      @x,@y,@z = @storage[$1],@x,@y
     else
       @x,@y,@z = input.to_f,@x,@y
     end
@@ -104,5 +110,29 @@ end
 2
 /
 |.ok_if -> { $x == 5 }
+
+%|
+10
+sto 1
+rcl 1
+|.ok_if -> { $x == 10 }
+
+%|
+10
+sto 1
+20
+sto 2
+30
+sto 3
+
+
+
+rcl 1
+rcl 2
++
+rcl 3
++
+|.ok_if -> { $x == 60 }
+
 
 
