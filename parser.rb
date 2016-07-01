@@ -1,36 +1,51 @@
 class HP12C
-  attr_reader :x,:y,:z
   def initialize
-    @x, @y, @z = *[""]*3
+    @x, @y, @z = 0.0,0.0,0.0
   end
   def eval string
     string.lines.each do |line|
-      compute(line)
+      puts "before: #{line}: #{inspect}" if $debug
+      compute(line.chomp)
+      puts "after: #{line}: #{inspect}" if $debug
     end
+  end
+
+  def compute input
+    @x,@y,@z = input.to_f,@x,@y
+  end
+
+  def xyz
+    [@x,@y,@z]
   end
 end
 
 class String
   def ok
     calc = HP12C.new
+    $x, $y, $z = "","",""
     result = calc.eval(self)
-    $x == calc.x
-    $y == calc.y
-    $z == calc.z
+    $x, $y, $z = calc.xyz
     result
   end
   def ok_if cond
-    unless cond.()
+    ok
+    if cond.()
+      print "."
+    else
       file, line, _ = caller[0].split(":")
       lines = File.readlines(file)
       line_spec = line.to_i
       expression = []
-      lines[0..line_spec].reverse.each_with_index do |line, line_index|
+      lines[0,line_spec].reverse.each_with_index do |line, line_index|
         expression.insert 0, line
-        break if line =~ /^%\|$/
+        break if line =~ /^%\|/
       end
 
-      puts "fail: #{line}: #{lines[line_spec]}"
+      what_failed = lines[line_spec-1].split(" -> {").last[0..-3]
+      evaluated = what_failed.gsub(/\$\w+/){|r|eval(r).inspect}
+      puts "fail on #{file}:#{line}     "+
+           " #{what_failed}\n"+
+           "        got #{evaluated}"
       puts "----------"
       puts expression
       puts "----------"
@@ -38,11 +53,22 @@ class String
   end
 end
 
-%||.ok if $x == "" && $y == "" && $z == ""
+%||.ok_if -> { $x == 0 && $y == 0 && $z == 0 }
 
 %|
 1
-|.ok if $x == "" && $y == 1
+|.ok_if -> { $x == 1 && $y == 0 }
+
+%|
+1
+
+|.ok_if -> { $x == 0 && $y == 1 }
+
+%|
+1
+
+
+|.ok_if -> { $x == 0 && $y == 0 &&  $z == 1 }
 
 %|
 1
