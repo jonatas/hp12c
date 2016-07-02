@@ -8,13 +8,16 @@ class HP12C
       #print "\nbefore: #{line.inspect}: #{xyz.inspect}\n" if $debug
       compute(line.chomp)
       #puts " after:  #{" " * line.inspect.size} #{xyz.inspect}" if $debug
-      print "\n: #{line.inspect}: #{xyz.inspect}       #{@storage.inspect}\n" if $debug
+      print "\n: #{line.inspect}: #{xyz.inspect} #{@storage.inspect}" if $debug
     end
   end
 
   def compute input
     case input
-    when /^([\+\-\/\*])/ then
+    when "-" then
+      @y, @z = @x, @y
+      @x = (@z - @y)
+    when /^([\+\/\*])/ then
       @y, @z = @x, @y
       operator = $1.to_sym
       @x = [@z, @y].inject operator
