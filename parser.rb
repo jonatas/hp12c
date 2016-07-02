@@ -58,9 +58,9 @@ class String
       lines = File.readlines(file)
       line_spec = line.to_i
       expression = []
-      lines[0,line_spec].reverse.each_with_index do |line, line_index|
-        expression.insert 0, line
-        break if line =~ /^%\|/
+      lines[0,line_spec].reverse.each_with_index do |_line, line_index|
+        expression.insert 0, _line
+        break if _line =~ /^%\|/
       end
 
       what_failed = lines[line_spec-1].split(" -> {").last[0..-3]
