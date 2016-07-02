@@ -75,7 +75,7 @@ class String
   end
 end
 
-%||.ok_if -> { $x == 0 && $y == 0 && $z == 0 }
+%||.ok_if -> { $x == 0 && $y == 0 && $z == 0 && $mem == {} }
 
 %|
 1
