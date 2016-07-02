@@ -114,8 +114,17 @@ end
 %|
 10
 sto 1
-rcl 1
 |.ok_if -> { $x == 10 }
+
+%|
+rcl 1
+|.ok_if -> { $x == nil }
+
+%|
+1234
+sto 1
+rcl 1
+|.ok_if -> { $x == 1234 }
 
 %|
 10
@@ -124,9 +133,6 @@ sto 1
 sto 2
 30
 sto 3
-
-
-
 rcl 1
 rcl 2
 +
