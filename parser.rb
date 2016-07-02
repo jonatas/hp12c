@@ -1,4 +1,5 @@
 class HP12C
+  attr_reader :storage
   def initialize
     @x, @y, @z = 0.0,0.0,0.0
     @storage = {}
@@ -41,6 +42,7 @@ class String
     $x, $y, $z = "","",""
     result = calc.eval(self)
     $x, $y, $z = calc.xyz
+    $mem = calc.storage
     result
   end
   def ok_if cond
@@ -114,14 +116,26 @@ end
 /
 |.ok_if -> { $x == 5 }
 
+## sto for storage
+
 %|
 10
 sto 1
-|.ok_if -> { $x == 10 }
+|.ok_if -> { $mem['1'] == 10.0 }
+
+%|
+10
+sto 1
+2
++
+sto 2
+|.ok_if -> { $mem['1'] == 10.0 && $mem['2'] == 12.0  }
 
 %|
 rcl 1
-|.ok_if -> { $x == nil }
+rcl 2
+rcl 3
+|.ok_if -> { [$x,$y,$z] == [nil,nil,nil] }
 
 %|
 1234
@@ -138,10 +152,32 @@ sto 2
 sto 3
 rcl 1
 rcl 2
-+
 rcl 3
+|.ok_if -> { [$x,$y,$z].compact == [30,20,10] }
+
+%|
+123
+sto 1
+456
+sto 2
+rcl 2
+rcl 1
+-
+|.ok_if -> { $x == 333 }
+
+%|
+123
+sto 1
+456
+sto 2
+789
+sto 3
+
+rcl 3
+rcl 2
 +
-|.ok_if -> { $x == 60 }
-
-
+rcl 1
++
+sto 4
+|.ok_if -> { $x == 1368 && $mem['4'] == 1368 }
 
