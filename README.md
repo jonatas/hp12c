@@ -72,3 +72,5 @@ rcl 2
 rcl 1
 - # 333
 ```
+
+Try `ruby parser.rb --debug`.

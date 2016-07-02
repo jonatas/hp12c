@@ -6,10 +6,14 @@ class HP12C
   end
   def eval string
     string.lines.each do |line|
-      #print "\nbefore: #{line.inspect}: #{xyz.inspect}\n" if $debug
-      compute(line.chomp)
-      #puts " after:  #{" " * line.inspect.size} #{xyz.inspect}" if $debug
-      print "\n: #{line.inspect}: #{xyz.inspect} #{@storage.inspect}" if $debug
+      input = line.chomp
+      compute(input)
+      label = (input == "" ? "ENTER" : input).ljust(10)
+      if $debug
+        puts "#{label}: #{xyz.inspect.ljust(25)} #{@storage.inspect.ljust(15)}"
+      elsif $repl
+        print "#{label} => #@x\n"
+      end
     end
   end
 
@@ -164,6 +168,9 @@ rcl 2
 rcl 1
 -
 |.ok_if -> { $x == 333 }
+
+$debug = ARGV.index("--debug") || ARGV.index("-d")
+$repl = ARGV.index("--repl")
 
 %|
 123
