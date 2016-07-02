@@ -28,7 +28,6 @@ See the code and examples.
 ```
 
 ```ruby
-%|
 1
 2
 + # 3
