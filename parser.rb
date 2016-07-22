@@ -1,3 +1,6 @@
+
+# Alteração de código
+
 class HP12C
   attr_reader :storage
   def initialize
