@@ -1,11 +1,5 @@
 # HP12C Parser
 
-It's one file code + specs for a while.
-
-Please run:
-
-    ruby parser.rb
-
 It's a simple parser that works like HP12C Financial Calculator.
 
 Current implementation covers basically x,y,z registers and storage:
@@ -72,5 +66,3 @@ rcl 2
 rcl 1
 - # 333
 ```
-
-Try `ruby parser.rb --debug`.
