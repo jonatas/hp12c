@@ -66,3 +66,5 @@ rcl 2
 rcl 1
 - # 333
 ```
+
+Try `ruby hp12c.rb --repl` to play with it.

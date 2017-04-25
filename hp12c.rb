@@ -1,4 +1,6 @@
 class HP12C
+  OPERATORS = /^([\+\/\*\-])$/
+
   attr_reader :mem, :x, :y, :z
   def initialize
     @x, @y, @z = 0.0,0.0,0.0
@@ -9,18 +11,12 @@ class HP12C
     string.lines.each do |line|
       input = line.chomp
       compute(input)
-      label = (input == "" ? "ENTER" : input).ljust(10)
-      if $debug
-        puts "#{label}: #{xyz.inspect.ljust(25)} #{@mem.inspect.ljust(15)}"
-      elsif $repl
-        print "#{label} => #@x\n"
-      end
     end
   end
 
   def compute input
     case input
-    when /^([\+\/\*\-])/ then
+    when OPERATORS then
       @y, @z = @x, @y
       operator = $1.to_sym
       @x = [@z, @y].inject operator
@@ -31,5 +27,15 @@ class HP12C
     else
       @x,@y,@z = input.to_f,@x,@y
     end
+  end
+end
+
+
+if ARGV.index("--repl")
+  calc = HP12C.new
+  input = ""
+  while input = gets
+    calc.eval(input)
+    puts calc.x if input =~ HP12C::OPERATORS
   end
 end
